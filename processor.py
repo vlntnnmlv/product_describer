@@ -28,13 +28,14 @@ To process:
     - {getNumChunks(df, config.CHUNKSIZE)} chunks
 """)
 
-    for i, chunk in enumerate(df_iterator):
+    for i, chunk in enumerate(tqdm(df_iterator, total=getNumChunks(df, config.CHUNKSIZE), desc="Processing chunks")):
         chunk_size = len(chunk)
-        print(f"Processing chunk {i + 1}, with {chunk_size} products...")
         prompt = build_batch_prompt(chunk["product"], config.KEYWORD_COUNT, config.DESCRIPTION_MAX_LENGTH)
-        raw_response = client.generate(prompt)
-        parsed_response = parse_batch_response(raw_response, chunk_size)
+        error, raw_response = client.generate(prompt)
+        if error:
+            break
 
+        parsed_response = parse_batch_response(raw_response, chunk_size)
         for product_info in parsed_response:
             results.append({
                     "product" : product_info["product"],
@@ -42,6 +43,10 @@ To process:
                     "keywords" : ", ".join(product_info["keywords"]),
                 })
 
-    print("Success!")
+    if not error:
+        print("Success")
+    else:
+        print("Failure")
+
     df_result = pd.DataFrame(results)
     df_result.to_csv(config.OUTPUT_CSV_PATH, sep=',', encoding='utf-8', index=False, header=True)

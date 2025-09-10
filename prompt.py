@@ -9,7 +9,8 @@ You are a product copywriter. For each product below, generate:
 Products:
 {numbered}
 
-Return JSON array of objects, like:
+Return the result strictly as a JSON array, no prose, no markdown, no ```json fences.
+Format:
 [
 {{"product": "product1", "description": "desc1", "keywords": ["k1","k2","k3",...]}},
 ...

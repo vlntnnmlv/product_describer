@@ -1,4 +1,3 @@
-from typing import Tuple, Dict
 from openai import OpenAI
 
 from config import Config
@@ -9,9 +8,9 @@ class Client:
         self.client = OpenAI(api_key = config.OPENAI_API_KEY)
         self.model = config.MODEL_NAME
 
-    def generate(self, prompt: str, max_tokens: int | None = None) -> str:
-        response = self.client.chat.completions.create(
+    def generate(self, prompt: str) -> str:
+        response = self.client.responses.create(
             model = self.model,
-            messages = [{"role": "user", "content": prompt}],
+            input = prompt,
         )
-        return response.choices[0].message.content
+        return response.error, response.output_text
