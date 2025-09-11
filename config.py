@@ -15,6 +15,7 @@ class Config:
 
     # Processing parameters
     CHUNKSIZE: int
+    ASYNC: bool
 
     # IO parameters
     INPUT_CSV_PATH: str
@@ -30,6 +31,7 @@ class Config:
             DESCRIPTION_MAX_LENGTH = args.description_length or int(os.environ.get("DESCRIPTION_MAX_LENGTH", 200)),
 
             CHUNKSIZE = args.chunksize or int(os.environ.get("CHUNKSIZE", 50)),
+            ASYNC = args.asynchronous or False,
 
             INPUT_CSV_PATH = args.input or os.environ.get("INPUT_CSV_PATH", "input.csv"),
             OUTPUT_CSV_PATH = args.output or os.environ.get("OUTPUT_CSV_PATH", "output.csv"),
