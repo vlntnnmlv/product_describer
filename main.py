@@ -1,9 +1,11 @@
 import argparse
+import asyncio
+
 from dotenv import load_dotenv
 
 from config import Config
-from client import Client
-from processor import run
+from client import Client, AsyncClient
+from processor import run, run_async
 
 def main() -> None:
     parser = argparse.ArgumentParser(description = "Product describer - generate short descriptions & keywords from product names.")
@@ -13,13 +15,18 @@ def main() -> None:
     parser.add_argument("--description_length", "-d", help = "Maximum length of product descripton")
     parser.add_argument("--keywords_count", "-k", help = "Amount of keywords for a product")
     parser.add_argument("--model", "-m", help = "Name of the model")
+    parser.add_argument("--async", "-a", help = "Turnon asynchronouse mode")
 
     args = parser.parse_args()
 
     load_dotenv()
     config = Config.Load(args)
-    client = Client(config)
-    run(client, config)
+    client = AsyncClient(config)
+    asyncio.run(run_async(client, config))
 
 if __name__ == "__main__":
+    from time import perf_counter
+    start = perf_counter()
     main()
+    end = perf_counter()
+    print(f"Elapsed time: {end - start}")
